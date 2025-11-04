@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Editar Cliente{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Editar Cliente: {{ cliente.nombre }}</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Datos del Cliente</h6>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('main.editar_cliente', cliente_id=cliente.id) }}" method="POST">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" 
+                               value="{{ cliente.nombre }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documento_fiscal" class="form-label">Documento (CUIT/DNI)</label>
+                        <input type="text" class="form-control" id="documento_fiscal" name="documento_fiscal"
+                               value="{{ cliente.documento_fiscal or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefono" name="telefono"
+                               value="{{ cliente.telefono or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               value="{{ cliente.email or '' }}">
+                    </div>
+                    <hr>
+                    <button type="submit" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50"><i class="fas fa-save"></i></span>
+                        <span class="text">Guardar Cambios</span>
+                    </button>
+                    <a href="{{ url_for('main.gestionar_clientes') }}" class="btn btn-secondary btn-icon-split">
+                        <span class="icon text-white-50"><i class="fas fa-arrow-left"></i></span>
+                        <span class="text">Cancelar</span>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

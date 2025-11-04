@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Historial de Jornadas{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Historial de Jornadas Laborales</h1>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Filtrar Historial</h6>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('main.historial_jornadas') }}" class="row g-3 align-items-end">
+            <div class="col-md-5"><label for="user_id" class="form-label">Empleado</label><select name="user_id" id="user_id" class="form-select"><option value="">-- Todos los empleados --</option>{% for user in usuarios %}<option value="{{ user.id }}" {% if user_id_filtro == user.id|string %}selected{% endif %}>{{ user.username }} ({{ user.role }})</option>{% endfor %}</select></div>
+            <div class="col-md-5"><label for="fecha" class="form-label">Fecha de Inicio</label><input type="date" name="fecha" id="fecha" class="form-control" value="{{ fecha_filtro or '' }}"></div>
+            <div class="col-md-2"><button type="submit" class="btn btn-primary w-100"><i class="fas fa-filter"></i> Filtrar</button><a href="{{ url_for('main.historial_jornadas') }}" class="btn btn-secondary w-100 mt-2">Limpiar</a></div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Jornadas Completadas</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Empleado</th>
+                        <th>Fecha</th>
+                        <th>Duración</th>
+                        <th>Diferencia Efectivo</th> <th>Notas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jornada in jornadas %}
+                    <tr>
+                        <td>{{ jornada.user.username }}</td>
+                        <td>{{ jornada.hora_inicio.strftime('%d/%m/%Y') }}</td>
+                        <td><strong class="text-primary">{{ jornada.duracion }}</strong></td>
+
+                        <td>
+                            {% set diferencia = jornada.diferencia_efectivo %}
+                            {% if diferencia == 0 %}
+                                <span class="badge bg-success">$0.00</span>
+                            {% elif diferencia > 0 %}
+                                <span class="badge bg-warning text-dark">+${{ "%.2f"|format(diferencia) }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">${{ "%.2f"|format(diferencia) }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ jornada.notas_cierre or 'N/A' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center"> No se encontraron jornadas que coincidan con los filtros.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

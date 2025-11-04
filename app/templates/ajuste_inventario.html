@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}Ajuste de Inventario{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Registrar Movimiento de Inventario</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Nuevo Movimiento</h6>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('main.ajuste_inventario') }}" method="POST">
+                    
+                    <div class="mb-3">
+                        <label for="producto_id" class="form-label">Producto</label>
+                        <select class="form-select" id="producto_id" name="producto_id" required>
+                            <option value="">-- Seleccionar un producto --</option>
+                            {% for p in productos %}
+                                <option value="{{ p.id }}">
+                                    {{ p.nombre }} (Stock actual: {{ p.stock }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="tipo_movimiento" class="form-label">Tipo de Movimiento</label>
+                        <select class="form-select" id="tipo_movimiento" name="tipo_movimiento" required>
+                            <option value="">-- Seleccionar un tipo --</option>
+                            <option value="Entrada Proveedor">Entrada por Proveedor (Stock +)</option>
+                            <option value="Ajuste por Rotura">Ajuste por Rotura (Stock -)</option>
+                            <option value="Ajuste Inventario (+)">Ajuste de Inventario (Stock +)</option>
+                            <option value="Ajuste Inventario (-)">Ajuste de Inventario (Stock -)</option>
+                            <option value="Devolución Cliente">Devolución de Cliente (Stock +)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cantidad" class="form-label">Cantidad a Mover</label>
+                        <input type="number" class="form-control" id="cantidad" name="cantidad" 
+                               placeholder="Ej: 50 (para entrada) o -1 (para ajuste)" required>
+                        <div class="form-text">
+                            Use un número positivo (ej: <b>50</b>) para entradas de stock.
+                            Use un número negativo (ej: <b>-1</b>) para salidas o roturas.
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <button type="submit" class="btn btn-success btn-icon-split">
+                        <span class="icon text-white-50"><i class="fas fa-check"></i></span>
+                        <span class="text">Guardar Movimiento</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

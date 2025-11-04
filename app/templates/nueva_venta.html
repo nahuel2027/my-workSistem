@@ -1,0 +1,231 @@
+{% extends "layout.html" %}
+{% block title %}Nueva Venta{% endblock %}
+
+{% block content %}
+<h1>Registrar Nueva Venta</h1>
+<hr>
+<form id="venta-form">
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="cliente_id" class="form-label">Asignar Cliente (Opcional)</label>
+                    <select name="cliente_id" id="cliente_id" class="form-select">
+                        <option value="">-- Venta de Mostrador (Anónima) --</option>
+                        {% for c in clientes %}
+                        <option value="{{ c.id }}">{{ c.nombre }} ({{ c.documento_fiscal or 'Sin Doc' }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="metodo_pago" class="form-label">Método de Pago</label>
+                    <select name="metodo_pago" id="metodo_pago" class="form-select" required>
+                        <option value="">-- Seleccionar método --</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta Débito">Tarjeta Débito</option>
+                        <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                        <option value="Transferencia (MP, etc)">Transferencia (MP, etc)</option>
+                    </select>
+                </div>
+            </div>
+            <hr>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50%;">Producto</th>
+                            <th style="width: 20%;">Cantidad</th>
+                            <th style="width: 20%;">Precio Unit.</th>
+                            <th style="width: 10%;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-venta-tbody">
+                        <tr>
+                            <td>
+                                <select name="producto_id[]" class="form-select product-select" required>
+                                    <option value="">-- Seleccionar producto --</option>
+                                    {% for p in productos %}
+                                    <option value="{{ p.id }}" data-precio="{{ "%.2f"|format(p.precio) }}">
+                                        {{ p.nombre }} (Stock: {{ p.stock }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td><input type="number" name="cantidad[]" class="form-control" min="1" value="1" required></td>
+                            <td><input type="text" class="form-control precio-unit" value="$0.00" readonly></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="button" id="btn-agregar-item" class="btn btn-outline-primary">
+                <i class="fas fa-plus-circle"></i> Agregar otro producto
+            </button>
+            <hr>
+
+            <div class="d-flex justify-content-end align-items-center">
+                <h3 class="me-3 mb-0">Total: <span id="total-en-vivo" class="text-success">$0.00</span></h3>
+                <button type="button" id="btn-completar-venta" class="btn btn-success btn-lg">
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    <i class="fas fa-check-circle me-2"></i>
+                    Completar Venta
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<template id="fila-producto-template">
+<tr>
+    <td>
+        <select name="producto_id[]" class="form-select product-select" required>
+            <option value="">-- Seleccionar producto --</option>
+            {% for p in productos %}
+            <option value="{{ p.id }}" data-precio="{{ "%.2f"|format(p.precio) }}">
+                {{ p.nombre }} (Stock: {{ p.stock }})
+            </option>
+            {% endfor %}
+        </select>
+    </td>
+    <td><input type="number" name="cantidad[]" class="form-control" min="1" value="1" required></td>
+    <td><input type="text" class="form-control precio-unit" value="$0.00" readonly></td>
+    <td><button type="button" class="btn btn-danger btn-sm btn-quitar-item"><i class="fas fa-trash"></i></button></td>
+</tr>
+</template>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ... (definiciones de tbody, template, btnAgregar, etc. sin cambios) ...
+    const tbody = document.getElementById('items-venta-tbody');
+    const template = document.getElementById('fila-producto-template');
+    const btnAgregar = document.getElementById('btn-agregar-item');
+    const btnCompletarVenta = document.getElementById('btn-completar-venta');
+    const totalEnVivoSpan = document.getElementById('total-en-vivo');
+
+    // ... (funciones actualizarPrecio, calcularTotalEnVivo, btnAgregar.listener sin cambios) ...
+    function actualizarPrecio(selectElement) {
+        const fila = selectElement.closest('tr');
+        const precioInput = fila.querySelector('.precio-unit');
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const precio = selectedOption.dataset.precio || '0.00';
+        precioInput.value = `$${precio}`;
+        calcularTotalEnVivo();
+    }
+    function calcularTotalEnVivo() {
+        let total = 0;
+        tbody.querySelectorAll('tr').forEach(fila => {
+            const select = fila.querySelector('.product-select');
+            const cantidadInput = fila.querySelector('input[name="cantidad[]"]');
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption && selectedOption.dataset.precio) {
+                const precio = parseFloat(selectedOption.dataset.precio);
+                const cantidad = parseInt(cantidadInput.value) || 0;
+                total += precio * cantidad;
+            }
+        });
+        totalEnVivoSpan.textContent = `$${total.toFixed(2)}`;
+    }
+    btnAgregar.addEventListener('click', function() {
+        const nuevaFila = template.content.cloneNode(true);
+        tbody.appendChild(nuevaFila);
+        setupRowListeners(nuevaFila);
+    });
+    function setupRowListeners(row) {
+        const btnQuitar = row.querySelector('.btn-quitar-item');
+        if (btnQuitar) {
+            btnQuitar.addEventListener('click', function() { row.remove(); calcularTotalEnVivo(); });
+        }
+        const select = row.querySelector('.product-select');
+        select.addEventListener('change', () => actualizarPrecio(select));
+        const cantidadInput = row.querySelector('input[name="cantidad[]"]');
+        cantidadInput.addEventListener('input', calcularTotalEnVivo);
+        actualizarPrecio(select);
+    }
+    setupRowListeners(tbody.querySelector('tr'));
+
+    // --- ¡LÓGICA DE AJAX MODIFICADA! ---
+    btnCompletarVenta.addEventListener('click', async function() {
+        setLoading(true);
+
+        // 1. Recolectar datos
+        const cliente_id = document.getElementById('cliente_id').value;
+        const metodo_pago = document.getElementById('metodo_pago').value; // <-- ¡NUEVO!
+        const producto_filas = tbody.querySelectorAll('tr');
+
+        const producto_ids = [];
+        const cantidades = [];
+
+        producto_filas.forEach(fila => {
+            const prodSelect = fila.querySelector('select[name="producto_id[]"]');
+            const cantInput = fila.querySelector('input[name="cantidad[]"]');
+            if (prodSelect.value && parseInt(cantInput.value) > 0) { // Solo añadir si hay producto y cantidad > 0
+                producto_ids.push(prodSelect.value);
+                cantidades.push(cantInput.value);
+            }
+        });
+
+        // 2. Validar
+        if (producto_ids.length === 0) {
+            alert('Error: No se han agregado productos a la venta.');
+            setLoading(false);
+            return;
+        }
+        if (!metodo_pago) { // <-- ¡NUEVO!
+            alert('Error: Debe seleccionar un método de pago.');
+            setLoading(false);
+            return;
+        }
+
+        // 3. Construir el JSON
+        const ventaData = {
+            cliente_id: cliente_id || null,
+            metodo_pago: metodo_pago, // <-- ¡NUEVO!
+            producto_ids: producto_ids,
+            cantidades: cantidades
+        };
+
+        // 4. Enviar (lógica sin cambios)
+        try {
+            const response = await fetch("{{ url_for('main.nueva_venta') }}", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ventaData)
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = `/venta/recibo/${data.venta_id}`;
+            } else {
+                alert(`Error al procesar la venta: ${data.error}`);
+                setLoading(false);
+            }
+        } catch (error) {
+            console.error('Error de red:', error);
+            alert('Error de conexión. No se pudo procesar la venta.');
+            setLoading(false);
+        }
+    });
+
+    // ... (función setLoading sin cambios) ...
+    function setLoading(isLoading) {
+        const spinner = btnCompletarVenta.querySelector('.spinner-border');
+        const icon = btnCompletarVenta.querySelector('.fa-check-circle');
+        if (isLoading) {
+            btnCompletarVenta.disabled = true;
+            spinner.classList.remove('d-none');
+            icon.classList.add('d-none');
+        } else {
+            btnCompletarVenta.disabled = false;
+            spinner.classList.add('d-none');
+            icon.classList.remove('d-none');
+        }
+    }
+});
+</script>
+{% endblock %}

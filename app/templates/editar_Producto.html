@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block title %}Editar Producto{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Editar Producto: {{ producto.nombre }}</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Datos del Producto</h6>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('main.editar_producto', producto_id=producto.id) }}" method="POST">
+                    
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Producto</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" 
+                               value="{{ producto.nombre }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="precio_costo" class="form-label">Precio de Costo ($)</label>
+                        <input type="number" class="form-control" id="precio_costo" name="precio_costo" 
+                               value="{{ producto.precio_costo }}" step="0.01" min="0" required>
+                        <div class="form-text">Cuánto te cuesta a ti el producto.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">Precio de Venta ($)</label>
+                        <input type="number" class="form-control" id="precio" name="precio" 
+                               value="{{ producto.precio }}" step="0.01" min="0.01" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">Stock Actual</label>
+                        <input type="number" class="form-control" id="stock" name="stock" 
+                               value="{{ producto.stock }}" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="stock_minimo" class="form-label">Stock Mínimo (Alerta)</label>
+                        <input type="number" class="form-control" id="stock_minimo" name="stock_minimo" 
+                            value="{{ producto.stock_minimo or 5 }}" min="0" required>
+                        <div class="form-text">Nivel para disparar alerta de "bajo stock".</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción (Opcional)</label>
+
+
+                    <div class="mb-3">
+                           <label for="stock_minimo" class="form-label">Stock Mínimo (Alerta)</label>
+                        <input type="number" class="form-control" id="stock_minimo" name="stock_minimo" 
+                            value="{{ producto.stock_minimo }}" min="0" required>
+                        <div class="form-text">Nivel para disparar alerta de "bajo stock".</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción (Opcional)</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" 
+                                  rows="3">{{ producto.descripcion or '' }}</textarea>
+                    </div>
+                    
+                    <hr>
+                    
+                    <button type="submit" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50"><i class="fas fa-save"></i></span>
+                        <span class="text">Guardar Cambios</span>
+                    </button>
+                    <a href="{{ url_for('main.gestionar_productos') }}" class="btn btn-secondary btn-icon-split">
+                        <span class="icon text-white-50"><i class="fas fa-arrow-left"></i></span>
+                        <span class="text">Cancelar</span>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block title %}Gestión de Empleados{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Gestión de Empleados</h1>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Lista de Usuarios del Sistema</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in usuarios %}
+                    <tr class="{% if not user.is_active %}table-danger text-muted{% endif %}">
+                        <td>
+                            {{ user.username }}
+                            {% if user.id == current_user.id %}(Tú){% endif %}
+                        </td>
+                       <td>
+                            {% if user.role == 'admin' %}
+                                <span class="badge bg-success">Admin</span>
+                            {% else %}
+                                <span class="badge bg-info text-dark">Empleado</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge bg-danger">Desactivado</span>
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            {% if user.id != current_user.id %}
+                                
+                                <form action="{{ url_for('main.toggle_active', user_id=user.id) }}" method="POST" class="d-inline">
+                                    {% if user.is_active %}
+                                        <button type="submit" class="btn btn-warning btn-sm" title="Desactivar Cuenta">
+                                            <i class="fas fa-user-slash"></i> Desactivar
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-success btn-sm" title="Activar Cuenta">
+                                            <i class="fas fa-user-check"></i> Activar
+                                        </button>
+                                    {% endif %}
+                                </form>
+                                
+                                <form action="{{ url_for('main.toggle_role', user_id=user.id) }}" method="POST" class="d-inline">
+                                    {% if user.role == 'empleado' %}
+                                        <button type_submit" class="btn btn-info btn-sm" title="Promover a Admin">
+                                            <i class="fas fa-user-shield"></i> Promover
+                                        </button>
+                                    {% else %}
+                                        <button type_submit" class="btn btn-secondary btn-sm" title="Degradar a Empleado">
+                                            <i class="fas fa-user-ninja"></i> Degradar
+                                        </button>
+                                    {% endif %}
+                                </form>
+                                
+                                <a href="{{ url_for('main.reset_password', user_id=user.id) }}" class="btn btn-danger btn-sm" title="Restablecer Contraseña">
+                                    <i class="fas fa-key"></i> Resetear Clave
+                                </a>
+
+                            {% else %}
+                                <span class="text-muted fst-italic">No se pueden realizar acciones sobre uno mismo.</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

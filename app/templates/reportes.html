@@ -1,0 +1,145 @@
+{% extends "layout.html" %}
+{% block title %}Reportes Avanzados{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Reportes Avanzados</h1>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Ventas de los Últimos 30 Días</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative; height:40vh; width:100%">
+                    <canvas id="ventasDiariasChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Ventas por Empleado (Mes Actual)</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative; height:40vh; width:100%">
+                    <canvas id="ventasPorEmpleadoChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Top 5 Productos (Mes Actual)</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="position: relative; height:40vh; width:100%">
+                    <canvas id="productosTopChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Gráfico 1: Ventas Diarias (Líneas) ---
+    fetch("{{ url_for('main.api_ventas_diarias_30d') }}")
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('ventasDiariasChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Ingresos ($)',
+                            data: data.data_ingresos,
+                            borderColor: '#4e73df',
+                            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                            fill: true,
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Ganancia Bruta ($)',
+                            data: data.data_ganancia,
+                            borderColor: '#1cc88a',
+                            backgroundColor: 'rgba(28, 200, 138, 0.05)',
+                            fill: true,
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        });
+
+    // --- Gráfico 2: Ventas por Empleado (Barras Apiladas) ---
+    fetch("{{ url_for('main.api_ventas_por_empleado_mes') }}")
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('ventasPorEmpleadoChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar', // Cambiado a 'bar' para mostrar Ingreso vs Ganancia
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Ganancia ($)',
+                            data: data.data_ganancia,
+                            backgroundColor: '#1cc88a', // Verde
+                        },
+                        {
+                            label: 'Costo ($)', // Mostramos el costo (Ingreso - Ganancia)
+                            data: data.data_ingresos.map((ingreso, i) => ingreso - data.data_ganancia[i]),
+                            backgroundColor: '#f6c23e', // Amarillo
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { // Hacemos que las barras se "apilen"
+                        x: { stacked: true },
+                        y: { stacked: true, beginAtZero: true }
+                    }
+                }
+            });
+        });
+
+    // --- Gráfico 3: Top 5 Productos (Barras) - Sin cambios ---
+    fetch("{{ url_for('main.api_productos_top_5_mes') }}")
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('productosTopChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Cantidad Vendida (Unidades)',
+                        data: data.data,
+                        backgroundColor: '#36b9cc' // Cian
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        });
+});
+</script>
+{% endblock %}
