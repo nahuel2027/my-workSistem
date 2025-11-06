@@ -14,6 +14,20 @@
                         <label for="nombre" class="form-label">Nombre Completo</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" required>
                     </div>
+<<<<<<< HEAD
+=======
+
+                    <div class="mb-3">
+                        <label for="condicion_iva" class="form-label">Condición de IVA</label>
+                        <select name="condicion_iva" id="condicion_iva" class="form-select" required>
+                            <option value="Consumidor Final" selected>Consumidor Final</option>
+                            <option value="Responsable Inscripto">Responsable Inscripto</option>
+                            <option value="Monotributista">Monotributista</option>
+                            <option value="Exento">Exento</option>
+                        </select>
+                    </div>
+
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                     <div class="mb-3">
                         <label for="documento_fiscal" class="form-label">Documento (CUIT/DNI)</label>
                         <input type="text" class="form-control" id="documento_fiscal" name="documento_fiscal">
@@ -44,8 +58,12 @@
                             <tr>
                                 <th>Nombre</th>
                                 <th>Documento</th>
+<<<<<<< HEAD
                                 <th>Teléfono</th>
                                 <th>Email</th>
+=======
+                                <th>Cond. IVA</th> <th>Teléfono</th>
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                                 <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
@@ -58,14 +76,23 @@
                                     </a>
                                 </td>
                                 <td>{{ cliente.documento_fiscal or 'N/A' }}</td>
+<<<<<<< HEAD
                                 <td>{{ cliente.telefono or 'N/A' }}</td>
                                 <td>{{ cliente.email or 'N/A' }}</td>
+=======
+                                <td><span class="badge bg-info text-dark">{{ cliente.condicion_iva }}</span></td>
+                                <td>{{ cliente.telefono or 'N/A' }}</td>
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                                 <td class="text-center">
                                     <a href="{{ url_for('main.editar_cliente', cliente_id=cliente.id) }}" class="btn btn-warning btn-circle btn-sm" title="Editar">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
                                     <form action="{{ url_for('main.eliminar_cliente', cliente_id=cliente.id) }}" method="POST" class="d-inline"
+<<<<<<< HEAD
                                           onsubmit="return confirm('¿Estás seguro de que quieres eliminar este cliente?');">
+=======
+                                        onsubmit="return confirm('¿Estás seguro de que quieres eliminar este cliente?');">
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                                         <button type="submit" class="btn btn-danger btn-circle btn-sm" title="Eliminar">
                                             <i class="fas fa-trash"></i>
                                         </button>

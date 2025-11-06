@@ -24,7 +24,11 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-shop"></i>
                 </div>
+<<<<<<< HEAD
                 <div class="sidebar-brand-text mx-3">Mi Negocio</div>
+=======
+                <div class="sidebar-brand-text mx-3">{{ config.get('nombre_tienda', 'Mi Negocio') }}</div>
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
             </a>
 
             <hr class="sidebar-divider my-0">
@@ -35,6 +39,7 @@
                     <span>Dashboard</span></a>
             </li>
 
+<<<<<<< HEAD
             {% if current_user.is_authenticated and current_user.role == 'admin' %}
             
                 <hr class="sidebar-divider">
@@ -56,12 +61,51 @@
             </a>
         </li>
 
+=======
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.nueva_venta') }}">
+                    <i class="fas fa-fw fa-cash-register"></i>
+                    <span>Nueva Venta</span></a>
+            </li>
+
+            {% if current_user.is_authenticated and current_user.role == 'admin' %}
+            
+                <hr class="sidebar-divider">
+                <div class="sidebar-heading">
+                    Gestión (Admin)
+                </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.gestionar_productos') }}">
+                        <i class="fas fa-fw fa-boxes"></i>
+                        <span>Productos</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.ajuste_inventario') }}">
+                        <i class="fas fa-fw fa-plus-square"></i>
+                        <span>Ajuste de Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.gestionar_clientes') }}">
+                        <i class="fas fa-fw fa-address-book"></i>
+                        <span>Gestión de Clientes</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider">
+                <div class="sidebar-heading">
+                    Reportes (Admin)
+                </div>
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('main.ver_ventas') }}">
                         <i class="fas fa-fw fa-list"></i>
                         <span>Historial de Ventas</span></a>
                 </li>
+<<<<<<< HEAD
                 
+=======
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('main.historial_jornadas') }}">
                         <i class="fas fa-fw fa-user-clock"></i>
@@ -74,6 +118,7 @@
                         <span>Reportes (Gráficos)</span>
                     </a>
                 </li>
+<<<<<<< HEAD
             <li class="nav-item">
             <a class="nav-link" href="{{ url_for('auth.register') }}">
                 <i class="fas fa-fw fa-user-plus"></i>
@@ -101,6 +146,39 @@
                     <span>Nueva Venta</span></a>
             </li>
 
+=======
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.reporte_inventario') }}">
+                        <i class="fas fa-fw fa-clipboard-list"></i>
+                        <span>Reporte de Inventario</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider">
+                <div class="sidebar-heading">
+                    Administración
+                </div>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.register') }}">
+                        <i class="fas fa-fw fa-user-plus"></i>
+                        <span>Registrar Empleado</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.gestionar_usuarios') }}">
+                        <i class="fas fa-fw fa-users-cog"></i>
+                        <span>Gestión de Empleados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.gestionar_configuracion') }}">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+
+            {% endif %}
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
             <hr class="sidebar-divider">
             <div class="sidebar-heading">
                 Turno
@@ -139,7 +217,11 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<<<<<<< HEAD
                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+=======
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                                     {{ current_user.username }}
                                     {% if current_user.role == 'admin' %}
                                         <span class="badge bg-success">{{ current_user.role|capitalize }}</span>
@@ -182,7 +264,11 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
+<<<<<<< HEAD
                         <span>Copyright &copy; Tu Negocio 2025</span>
+=======
+                        <span>Copyright &copy; {{ config.get('nombre_tienda', 'Nahuel Aguilera') }} 2025</span>
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                     </div>
                 </div>
             </footer>

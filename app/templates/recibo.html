@@ -9,6 +9,7 @@
     
     <style>
         body {
+<<<<<<< HEAD
             background-color: #f8f9fa;
         }
         .container {
@@ -66,6 +67,78 @@
                 margin-top: 0;
                 border: none;
             }
+=======
+            background-color: #f0f2f5;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .receipt-container {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.05);
+        }
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        .header-left h3 {
+            margin: 0;
+            font-weight: bold;
+        }
+        .header-right {
+            text-align: right;
+        }
+        .header-right h4 {
+            margin: 0;
+            font-weight: bold;
+            color: #d9534f;
+        }
+        .customer-info {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: .25rem;
+        }
+        .items-table th {
+            border-bottom: 2px solid #333;
+        }
+        .items-table td {
+            border-bottom: 1px dashed #ccc;
+        }
+        .text-end {
+            text-align: right;
+        }
+        .totals-section {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .totals-table {
+            width: 40%;
+            min-width: 250px;
+        }
+        .totals-table td {
+            padding: 0.5rem;
+        }
+        .total-final {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+        
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: #ffffff; }
+            .receipt-container { margin: 0; border: none; box-shadow: none; padding: 0.5rem; }
+            .container { max-width: 100%; }
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
         }
     </style>
 </head>
@@ -87,6 +160,7 @@
 
         <div class="receipt-container">
             <div class="receipt-header">
+<<<<<<< HEAD
                 <h3>Mi Negocio</h3>
                 <p>Fecha: {{ venta.fecha.strftime('%d/%m/%Y %H:%M') }}<br>
                    Venta ID: #{{ venta.id }}<br>
@@ -128,6 +202,72 @@
             <hr style="border-style: dashed;">
             
             <p class="text-center small mt-3">¡Gracias por su compra!</p>
+=======
+                <div class="header-left">
+                    <h3>{{ config.get('nombre_tienda', 'Mi Negocio') }}</h3>
+                    <p class="mb-0">{{ config.get('domicilio_tienda', 'Domicilio no configurado') }}</p>
+                    <p class="mb-0">CUIT: {{ config.get('cuit_tienda', 'N/A') }}</p>
+                    <p class="mb-0">Cond. IVA: {{ config.get('condicion_iva_tienda', 'N/A') }}</p>
+                </div>
+                <div class="header-right">
+                    <h4 class="text-danger">TICKET NO VÁLIDO COMO FACTURA</h4>
+                    <p class="mb-0"><strong>Recibo N°:</strong> {{ "%08d"|format(venta.id) }}</p>
+                    <p class="mb-0"><strong>Fecha:</strong> {{ venta.fecha.strftime('%d/%m/%Y %H:%M') }}</p>
+                    <p class="mb-0"><strong>Método de Pago:</strong> {{ venta.metodo_pago }}</p>
+                </div>
+            </div>
+
+            <div class="customer-info">
+                <h6>Datos del Cliente:</h6>
+                {% if venta.cliente %}
+                    <p class="mb-0"><strong>Nombre:</strong> {{ venta.cliente.nombre }}</p>
+                    <p class="mb-0"><strong>CUIT/DNI:</strong> {{ venta.cliente.documento_fiscal or 'N/A' }}</p>
+                    <p class="mb-0"><strong>Cond. IVA:</strong> {{ venta.cliente.condicion_iva }}</p>
+                {% else %}
+                    <p class="mb-0">Consumidor Final (Anónimo)</p>
+                {% endif %}
+            </div>
+
+            <table class="table items-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th class="text-end">Cant.</th>
+                        <th class="text-end">Precio Unit.</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in venta.detalles %}
+                    <tr>
+                        <td>{{ detalle.producto.nombre }}</td>
+                        <td class="text-end">{{ detalle.cantidad }}</td>
+                        <td class="text-end">${{ "%.2f"|format(detalle.precio_unitario) }}</td>
+                        <td class="text-end">${{ "%.2f"|format(detalle.precio_unitario * detalle.cantidad) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="totals-section">
+                <table class="table totals-table">
+                    <tbody>
+                        <tr>
+                            <td><strong>Subtotal Neto:</strong></td>
+                            <td class="text-end">${{ "%.2f"|format(venta.total_neto_gravado) }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IVA (21%):</strong></td>
+                            <td class="text-end">${{ "%.2f"|format(venta.total_monto_iva) }}</td>
+                        </tr>
+                        <tr class="total-final">
+                            <td><strong>TOTAL:</strong></td>
+                            <td class="text-end">${{ "%.2f"|format(venta.total) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
             
         </div>
     </div>

@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+{% block title %}Reporte de Inventario{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Reporte de Movimientos de Inventario</h1>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Filtrar Movimientos</h6>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('main.reporte_inventario') }}" class="row g-3 align-items-end">
+            
+            <div class="col-md-5">
+                <label for="producto_id" class="form-label">Producto</label>
+                <select name="producto_id" id="producto_id" class="form-select">
+                    <option value="">-- Todos los productos --</option>
+                    {% for p in productos %}
+                        <option value="{{ p.id }}" 
+                                {% if producto_id_filtro == p.id|string %}selected{% endif %}>
+                            {{ p.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-5">
+                <label for="tipo" class="form-label">Tipo de Movimiento</label>
+                <select name="tipo" id="tipo" class="form-select">
+                    <option value="">-- Todos los tipos --</option>
+                    {% for t in tipos_movimiento %}
+                        <option value="{{ t }}" 
+                                {% if tipo_filtro == t %}selected{% endif %}>
+                            {{ t }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+                <a href="{{ url_for('main.reporte_inventario') }}" class="btn btn-secondary w-100 mt-2">
+                    Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Historial de Movimientos</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Tipo</th>
+                        <th>Registrado por</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mov in movimientos.items %}
+                    <tr>
+                        <td>{{ mov.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>
+                            <a href="{{ url_for('main.editar_producto', producto_id=mov.producto_id) }}">
+                                {{ mov.producto.nombre }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if mov.cantidad > 0 %}
+                                <strong class="text-success">+{{ mov.cantidad }}</strong>
+                            {% else %}
+                                <strong class="text-danger">{{ mov.cantidad }}</strong>
+                            {% endif %}
+                        </td>
+                        <td>{{ mov.tipo }}</td>
+                        <td>{{ mov.user.username }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            No se encontraron movimientos que coincidan con los filtros.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if movimientos.pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center mb-0">
+                <li class="page-item {% if not movimientos.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('main.reporte_inventario', page=movimientos.prev_num, producto_id=producto_id_filtro, tipo=tipo_filtro) }}">
+                        &laquo; Anterior
+                    </a>
+                </li>
+                {% for page_num in movimientos.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if movimientos.page == page_num %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('main.reporte_inventario', page=page_num, producto_id=producto_id_filtro, tipo=tipo_filtro) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not movimientos.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('main.reporte_inventario', page=movimientos.next_num, producto_id=producto_id_filtro, tipo=tipo_filtro) }}">
+                        Siguiente &raquo;
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

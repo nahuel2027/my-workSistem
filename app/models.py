@@ -2,12 +2,29 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from flask_login import UserMixin
 import datetime
+<<<<<<< HEAD
 import decimal
+=======
+import decimal # Asegúrate de que decimal esté importado
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
 
 db = SQLAlchemy()
 
 # -----------------------------------------------
+<<<<<<< HEAD
 # MODELO DE USUARIO
+=======
+# MODELO DE CONFIGURACIÓN (¡NUEVO!)
+# -----------------------------------------------
+class Configuracion(db.Model):
+    """Guarda los datos de la empresa (Nombre, CUIT, etc.)"""
+    id = db.Column(db.Integer, primary_key=True)
+    clave = db.Column(db.String(50), unique=True, nullable=False)
+    valor = db.Column(db.String(200), nullable=True)
+
+# -----------------------------------------------
+# MODELO DE USUARIO (Empleado/Admin)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
 # -----------------------------------------------
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,7 +41,11 @@ class User(db.Model, UserMixin):
         return f'<User {self.username}>'
 
 # -----------------------------------------------
+<<<<<<< HEAD
 # MODELO DE CLIENTE
+=======
+# MODELO CLIENTE (¡MODIFICADO!)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
 # -----------------------------------------------
 class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,17 +53,31 @@ class Cliente(db.Model):
     documento_fiscal = db.Column(db.String(20), nullable=True, unique=True)
     telefono = db.Column(db.String(50), nullable=True)
     email = db.Column(db.String(120), nullable=True)
+<<<<<<< HEAD
+=======
+    
+    # --- ¡NUEVA COLUMNA DE IVA! ---
+    condicion_iva = db.Column(db.String(50), nullable=False, default='Consumidor Final')
+    # -----------------------------
+    
+    # (Relación definida UNA SOLA VEZ)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
     ventas = db.relationship('Venta', backref='cliente', lazy=True)
 
     def __repr__(self):
         return f'<Cliente {self.nombre}>'
 
 # -----------------------------------------------
+<<<<<<< HEAD
 # MODELO MOVIMIENTO STOCK (AUDITORÍA)
+=======
+# MODELO MOVIMIENTO STOCK (Auditoría)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
 # -----------------------------------------------
 class MovimientoStock(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.DateTime(timezone=True), server_default=func.now())
+<<<<<<< HEAD
     cantidad = db.Column(db.Integer, nullable=False) # Positivo (entrada), Negativo (salida)
     tipo = db.Column(db.String(50), nullable=False) # Ej: "Entrada Proveedor", "Venta", "Anulación Venta"
     producto_id = db.Column(db.Integer, db.ForeignKey('producto.id'), nullable=False)
@@ -53,6 +88,15 @@ class MovimientoStock(db.Model):
 
 # -----------------------------------------------
 # MODELO DE JORNADA (TURNO)
+=======
+    cantidad = db.Column(db.Integer, nullable=False)
+    tipo = db.Column(db.String(50), nullable=False) 
+    producto_id = db.Column(db.Integer, db.ForeignKey('producto.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+# -----------------------------------------------
+# MODELO DE JORNADA (Turno)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
 # -----------------------------------------------
 class Jornada(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -86,7 +130,11 @@ class Jornada(db.Model):
         return f'<Jornada {self.id} - User {self.user_id}>'
 
 # -----------------------------------------------
+<<<<<<< HEAD
 # MODELO CIERRE METODO PAGO (ARQUEO)
+=======
+# MODELO CIERRE METODO PAGO (Arqueo)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
 # -----------------------------------------------
 class CierreMetodoPago(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -106,7 +154,11 @@ class Producto(db.Model):
     precio = db.Column(db.Numeric(10, 2), nullable=False)
     precio_costo = db.Column(db.Numeric(10, 2), nullable=False, default=0.0)
     stock = db.Column(db.Integer, nullable=False, default=0)
+<<<<<<< HEAD
     stock_minimo = db.Column(db.Integer, nullable=False, default=5) # Alerta de Stock
+=======
+    stock_minimo = db.Column(db.Integer, nullable=False, default=5)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
     
     movimientos_stock = db.relationship('MovimientoStock', backref='producto', lazy=True)
     
@@ -114,16 +166,34 @@ class Producto(db.Model):
         return f'<Producto {self.nombre}>'
 
 # -----------------------------------------------
+<<<<<<< HEAD
 # MODELO DE VENTA
+=======
+# MODELO DE VENTA (¡MODIFICADO!)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
 # -----------------------------------------------
 class Venta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fecha = db.Column(db.DateTime(timezone=True), server_default=func.now())
     total = db.Column(db.Numeric(10, 2), nullable=False, default=0.0)
     ganancia_bruta_total = db.Column(db.Numeric(10, 2), nullable=False, default=0.0)
+<<<<<<< HEAD
     estado = db.Column(db.String(20), nullable=False, default='completada')
     metodo_pago = db.Column(db.String(50), nullable=False, default='Efectivo')
     
+=======
+    
+    # --- ¡NUEVAS COLUMNAS DE IMPUESTOS! ---
+    total_neto_gravado = db.Column(db.Numeric(10, 2), nullable=False, default=0.0)
+    total_monto_iva = db.Column(db.Numeric(10, 2), nullable=False, default=0.0)
+    # ------------------------------------
+    
+    # (Definido UNA SOLA VEZ)
+    estado = db.Column(db.String(20), nullable=False, default='completada')
+    metodo_pago = db.Column(db.String(50), nullable=False, default='Efectivo')
+    
+    # Claves Foráneas
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     jornada_id = db.Column(db.Integer, db.ForeignKey('jornada.id'), nullable=True)
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=True)
@@ -131,10 +201,17 @@ class Venta(db.Model):
     detalles = db.relationship('DetalleVenta', backref='venta', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
+<<<<<<< HEAD
         return f'<Venta {self.id} - {self.estado}>'
 
 # -----------------------------------------------
 # MODELO DE DETALLE DE VENTA
+=======
+        return f'<Venta {self.id} - {self.metodo_pago}>'
+
+# -----------------------------------------------
+# MODELO DE DETALLE DE VENTA (¡MODIFICADO!)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
 # -----------------------------------------------
 class DetalleVenta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -142,6 +219,15 @@ class DetalleVenta(db.Model):
     precio_unitario = db.Column(db.Numeric(10, 2), nullable=False)
     precio_costo_unitario = db.Column(db.Numeric(10, 2), nullable=False)
     
+<<<<<<< HEAD
+=======
+    # --- ¡NUEVAS COLUMNAS DE IMPUESTOS! ---
+    neto_gravado = db.Column(db.Numeric(10, 2), nullable=False)
+    monto_iva = db.Column(db.Numeric(10, 2), nullable=False)
+    # ------------------------------------
+    
+    # (Definido UNA SOLA VEZ)
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
     venta_id = db.Column(db.Integer, db.ForeignKey('venta.id'), nullable=False)
     producto_id = db.Column(db.Integer, db.ForeignKey('producto.id'), nullable=False)
     

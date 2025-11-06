@@ -14,7 +14,11 @@
             </div>
             <div class="card-body">
                 <form action="{{ url_for('jornadas.finalizar_jornada') }}" method="POST">
+<<<<<<< HEAD
 
+=======
+                    
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                     {% if not totales_esperados %}
                         <div class="alert alert-info">No se registraron ventas en esta jornada.</div>
                     {% else %}
@@ -30,7 +34,11 @@
                                        style="font-size: 1.2rem; font-weight: bold; background-color: #e9ecef;">
                             </div>
                         </div>
+<<<<<<< HEAD
 
+=======
+                        
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                         {% if metodo == 'Efectivo' %}
                         <div class="mb-3">
                             <label for="real_contado_{{ metodo }}" class="form-label">
@@ -51,21 +59,35 @@
                         <hr>
                         {% endfor %}
                     {% endif %}
+<<<<<<< HEAD
 
+=======
+                    
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                     <div class="mb-3">
                         <label for="notas_cierre" class="form-label">Notas de Cierre (Opcional)</label>
                         <textarea class="form-control" id="notas_cierre" name="notas_cierre" rows="3"
                                   placeholder="Ej: Faltó cambio, lote del posnet 1234 OK..."></textarea>
                     </div>
+<<<<<<< HEAD
 
                     <hr>
 
+=======
+                    
+                    <hr>
+                    
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                     <button type="submit" class="btn btn-success btn-lg btn-icon-split"
                             onclick="return confirm('¿Estás seguro de que el monto contado es correcto? Esta acción cerrará tu turno y no se puede deshacer.');">
                         <span class="icon text-white-50"><i class="fas fa-check-circle"></i></span>
                         <span class="text">Confirmar y Cerrar Turno</span>
                     </button>
+<<<<<<< HEAD
 
+=======
+                    
+>>>>>>> 3469ee7 (Actualizo código con nuevas funciones)
                     <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
                         Cancelar
                     </a>

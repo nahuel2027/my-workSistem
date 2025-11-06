@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block title %}Configuración del Negocio{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Configuración del Negocio</h1>
+<p>Aquí puedes establecer los datos de tu empresa que aparecerán en los recibos y facturas.</p>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Datos de la Empresa</h6>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('main.gestionar_configuracion') }}" method="POST">
+                    
+                    <div class="mb-3">
+                        <label for="nombre_tienda" class="form-label">Nombre del Negocio</label>
+                        <input type="text" class="form-control" id="nombre_tienda" name="valor" 
+                               value="{{ config.nombre_tienda }}">
+                        <input type="hidden" name="clave" value="nombre_tienda">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="cuit_tienda" class="form-label">CUIT/Documento</label>
+                        <input type="text" class="form-control" id="cuit_tienda" name="valor" 
+                               value="{{ config.cuit_tienda }}">
+                        <input type="hidden" name="clave" value="cuit_tienda">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="condicion_iva_tienda" class="form-label">Condición de IVA</label>
+                        <select name="valor" id="condicion_iva_tienda" class="form-select">
+                            <option value="Responsable Inscripto" {% if config.condicion_iva_tienda == 'Responsable Inscripto' %}selected{% endif %}>Responsable Inscripto</option>
+                            <option value="Monotributista" {% if config.condicion_iva_tienda == 'Monotributista' %}selected{% endif %}>Monotributista</option>
+                            <option value="Exento" {% if config.condicion_iva_tienda == 'Exento' %}selected{% endif %}>Exento</joption>
+                        </select>
+                        <input type="hidden" name="clave" value="condicion_iva_tienda">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="domicilio_tienda" class="form-label">Domicilio Comercial</label>
+                        <input type="text" class="form-control" id="domicilio_tienda" name="valor" 
+                               value="{{ config.domicilio_tienda }}">
+                        <input type="hidden" name="clave" value="domicilio_tienda">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="simbolo_moneda" class="form-label">Símbolo de Moneda</label>
+                        <input type="text" class="form-control" id="simbolo_moneda" name="valor" 
+                               value="{{ config.simbolo_moneda or '$' }}">
+                        <input type="hidden" name="clave" value="simbolo_moneda">
+                    </div>
+                    
+                    <hr>
+                    <button type="submit" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50"><i class="fas fa-save"></i></span>
+                        <span class="text">Guardar Configuración</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
